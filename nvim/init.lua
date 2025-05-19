@@ -27,9 +27,53 @@ require('jetpack.packer').startup(function(use)
   use 'tpope/vim-fugitive'
   use 'tpope/vim-rhubarb'
   use 'hashivim/vim-terraform'
+  use 'yaegassy/coc-volar'
+
+  -- use 'github/copilot.vim'
+  
+  use 'windwp/nvim-ts-autotag'
+  use 'nvim-treesitter/nvim-treesitter'
+
+  use {
+    'yetone/avante.nvim',
+    branch = 'main',
+    run = 'make',
+    config = function()
+      require('avante').setup({
+        provider = 'copilot',
+        auto_suggestion_provider = 'copilot'
+      })
+    end
+  }
+
+  -- Require plugins for avante.nvim
+  use 'stevearc/dressing.nvim'
+  use 'nvim-lua/plenary.nvim'
+  use 'MunifTanjim/nui.nvim'
+  use 'MeanderingProgrammer/render-markdown.nvim'
+
+  -- Optional plugins for avante.nvim
+  use 'nvim-tree/nvim-web-devicons'
+  use 'HakonHarnes/img-clip.nvim'
+  use {
+    "zbirenbaum/copilot.lua",
+    config = function()
+      require("copilot").setup({
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          keymap = {
+            accept = "<Tab>",  -- ★ ここでTABを割り当て
+          }
+        }
+      })
+    end,
+  }
 end)
 
 require('mason').setup()
+
+
 require('mason-lspconfig').setup_handlers({ function(server)
   local opt = {
     -- Function executed when the LSP server startup
@@ -42,6 +86,7 @@ require('mason-lspconfig').setup_handlers({ function(server)
       vim.lsp.protocol.make_client_capabilities()
     )
   }
+  print(server)
   require('lspconfig')[server].setup(opt)
 end })
 
@@ -66,3 +111,10 @@ cmp.setup {
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
 }
+
+require('nvim-treesitter.configs').setup {
+  autotag = {
+    enable = true,
+  }
+}
+require('nvim-ts-autotag').setup()
